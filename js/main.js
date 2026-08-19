@@ -70,6 +70,25 @@ fixes.textContent=`
 
   /* Prevent faded reveal states from reading like broken contrast during load. */
   .reveal{will-change:transform,opacity}
+
+  /* Image framing: show the complete artwork instead of cropping it inside fixed boxes. */
+  .hero-media{height:auto;aspect-ratio:4/5;display:flex;align-items:center;justify-content:center;background:#08170e;overflow:hidden}
+  .hero-media img{width:100%;height:100%;object-fit:contain;object-position:center}
+  .story-visual img{height:auto;aspect-ratio:auto;object-fit:contain;background:#dfe9df}
+  .dna-gallery figure{background:#0d2619}
+  .dna-gallery img{height:auto;aspect-ratio:16/9;object-fit:contain;object-position:center;background:#0d2619}
+  .identity-art{overflow:hidden}
+  .identity-art img{height:auto;max-height:500px;object-fit:contain;object-position:center}
+  .key-visual{background:#0d2619}
+  .key-visual img{height:auto;max-height:none;object-fit:contain;object-position:center}
+  .world-mosaic figure{background:#dfe9df}
+  .world-mosaic figure img,.world-mosaic .world-main img{height:auto;aspect-ratio:16/9;object-fit:contain;object-position:center;background:#dfe9df}
+  .digital-card.image-card img{object-fit:contain;object-position:center;background:#0d2619}
+  @media(max-width:650px){
+    .hero-media{width:58vw;height:auto;aspect-ratio:4/5}
+    .dna-gallery img,.world-mosaic figure img,.world-mosaic .world-main img{height:auto;aspect-ratio:16/9}
+    .identity-art img{max-height:350px}
+  }
 `;
 document.head.appendChild(fixes);
 
