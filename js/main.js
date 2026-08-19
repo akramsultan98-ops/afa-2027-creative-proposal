@@ -21,13 +21,11 @@ const pageNow=document.querySelector('.page-count b');
 function updateChrome(){const max=document.documentElement.scrollHeight-innerHeight;const pct=max>0?(scrollY/max)*100:0;if(progress)progress.style.width=pct+'%';let current=1;sections.forEach((s,i)=>{const r=s.getBoundingClientRect();if(r.top<=innerHeight*.45)current=i+1});if(pageNow)pageNow.textContent=String(current).padStart(2,'0')}
 window.addEventListener('scroll',updateChrome,{passive:true});window.addEventListener('resize',updateChrome);updateChrome();
 
-// V4 visual correction layer: contrast, adaptive header, and restrained branding.
+// V4 visual correction layer: contrast, adaptive header, image framing, and exact footer branding treatment.
 const fixes=document.createElement('style');
 fixes.textContent=`
-  /* Remove the old green mouse halo completely */
   .cursor-glow{display:none!important}
 
-  /* Dark sections were using .dark without a background rule, causing white-on-light failures. */
   .section.dark{background:var(--forest);color:var(--white)}
   .section.dark .two-col-head>p{color:rgba(255,255,255,.58)}
   .section.dark .section-index{color:rgba(255,255,255,.55)}
@@ -37,7 +35,6 @@ fixes.textContent=`
   .section.dark .flow-card h3,.section.dark .journey-step strong{color:var(--white)}
   .section.dark .flow-card p,.section.dark .journey-step p{color:rgba(255,255,255,.58)}
 
-  /* Keep all light surfaces genuinely dark in typography. */
   .section.light,.section.light h2,.section.light h3,.section.light strong{color:var(--ink)}
   .section.light p{color:var(--muted)}
   .section.light .mega-title span,.section.light h2 span{color:var(--green2)}
@@ -48,30 +45,22 @@ fixes.textContent=`
   .identity-notes p{color:var(--muted)}
   .production .two-col-head>p,.digital .two-col-head>p{color:var(--muted)}
 
-  /* Header adapts automatically over both dark and light sections. */
   .site-header{mix-blend-mode:difference}
   .site-header .brand img{mix-blend-mode:normal}
   .site-header .header-center,.site-header .menu-btn{mix-blend-mode:normal}
 
-  /* Paradigm lockup: green, compact, closer to the proposal cover treatment. */
-  .paradigm-lockup{display:inline-flex;align-items:center;gap:12px;color:var(--green);text-decoration:none}
-  .paradigm-lockup .p-mark{width:28px;height:28px;display:grid;place-items:center}
-  .paradigm-lockup .p-mark svg{width:28px;height:28px;display:block}
-  .paradigm-lockup .p-word{display:flex;flex-direction:column;line-height:.92;text-align:left}
-  .paradigm-lockup .p-word b{font:700 15px var(--display);letter-spacing:.18em;color:currentColor}
-  .paradigm-lockup .p-word small{font:600 6px var(--sans);letter-spacing:.24em;color:currentColor;margin-top:4px}
-  .hero-bottom .paradigm-lockup{color:var(--green)}
-  .final-footer .paradigm-lockup{color:var(--green)}
+  /* Paradigm: use the vector lockup as the actual footer/hero brand, not a recreated text mark. */
+  .paradigm-lockup{display:inline-flex;align-items:center;line-height:0;color:inherit;text-decoration:none}
+  .paradigm-lockup .paradigm-logo{display:block;width:185px;height:auto}
+  .hero-bottom .paradigm-lockup{filter:none}
+  .final-footer .paradigm-lockup{filter:none}
 
-  /* Better legibility for storyboard and other dark editorial panels. */
   .storyboard>div{color:var(--white)}
   .storyboard b{color:var(--white)}
   .storyboard small{color:rgba(255,255,255,.55)}
-
-  /* Prevent faded reveal states from reading like broken contrast during load. */
   .reveal{will-change:transform,opacity}
 
-  /* Image framing: show the complete artwork instead of cropping it inside fixed boxes. */
+  /* Show complete artwork and preserve each source ratio. */
   .hero-media{height:auto;aspect-ratio:4/5;display:flex;align-items:center;justify-content:center;background:#08170e;overflow:hidden}
   .hero-media img{width:100%;height:100%;object-fit:contain;object-position:center}
   .story-visual img{height:auto;aspect-ratio:auto;object-fit:contain;background:#dfe9df}
@@ -88,11 +77,12 @@ fixes.textContent=`
     .hero-media{width:58vw;height:auto;aspect-ratio:4/5}
     .dna-gallery img,.world-mosaic figure img,.world-mosaic .world-main img{height:auto;aspect-ratio:16/9}
     .identity-art img{max-height:350px}
+    .paradigm-lockup .paradigm-logo{width:145px}
   }
 `;
 document.head.appendChild(fixes);
 
-function paradigmMarkup(){return `<span class="paradigm-lockup" aria-label="Paradigm Capital Group"><span class="p-mark"><svg viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M2 6h6v20H2zM10 6h5l6 7v13h-6V15l-5-5zm12 0h8v20h-6V13l-2-2zM10 6l6 7 6-7h6l-8 9-4-4-4 4-8-9z"/></svg></span><span class="p-word"><b>PARADIGM</b><small>CAPITAL GROUP</small></span></span>`}
+function paradigmMarkup(){return `<span class="paradigm-lockup" aria-label="Paradigm Capital Group"><img class="paradigm-logo" src="assets/logo/paradigm-capital-group.svg" alt="Paradigm Capital Group"></span>`}
 
 document.querySelectorAll('.hero-bottom>span').forEach(el=>el.outerHTML=paradigmMarkup());
 document.querySelectorAll('.final-footer>span:first-child').forEach(el=>el.outerHTML=paradigmMarkup());
