@@ -25,6 +25,10 @@ window.addEventListener('resize',updateChrome);
 const fixes=document.createElement('style');
 fixes.textContent=`
 .cursor-glow{display:none!important}
+/* The AFA mark is intentionally removed from the top-left header. */
+.site-header .brand{display:none!important}
+.site-header{justify-content:flex-end!important}
+.site-header .header-center{margin-left:auto;margin-right:20px}
 .section.dark{background:var(--forest);color:var(--white)}
 .section.dark .two-col-head>p{color:rgba(255,255,255,.58)}
 .section.dark .section-index{color:rgba(255,255,255,.55)}
@@ -38,7 +42,6 @@ fixes.textContent=`
 .section.light .mega-title span,.section.light h2 span{color:var(--green2)}
 .section.light .eyebrow.green{color:var(--green2)}
 .site-header{mix-blend-mode:difference}
-.site-header .brand img{mix-blend-mode:normal}
 .site-header .header-center,.site-header .menu-btn{mix-blend-mode:normal}
 .hero-bottom>span{display:none!important}
 .storyboard>div,.storyboard b{color:var(--white)}
@@ -72,11 +75,8 @@ fixes.textContent=`
 .library-card figcaption{display:flex;justify-content:space-between;gap:20px;padding:15px 18px 17px;border-top:1px solid rgba(11,33,22,.08);font-size:11px;letter-spacing:.12em;text-transform:uppercase;background:var(--cream)}
 .library-card figcaption span:first-child{color:var(--green2)}
 .library-card figcaption span:last-child{color:var(--ink);text-align:right}
-.library-group:first-of-type .library-grid .library-card:first-child{grid-column:span 2}
-.library-group:nth-of-type(2) .library-grid .library-card:first-child{grid-column:span 2}
+.library-group:first-of-type .library-grid .library-card:first-child,.library-group:nth-of-type(2) .library-grid .library-card:first-child{grid-column:span 2}
 .visual-library .eyebrow{color:var(--green2)}
-
-.library-mode .site-header .brand{opacity:0;visibility:hidden;pointer-events:none}
 .library-mode .site-header .header-center{opacity:.75}
 
 @media(max-width:900px){
@@ -106,13 +106,18 @@ document.head.appendChild(fixes);
  section.className='visual-library';
  section.dataset.nav='Visual Applications';
  const groups=[
-  {title:'Event Visual Applications',pages:Array.from({length:9},(_,i)=>i+5)},
-  {title:'Environmental & 3D Applications',pages:Array.from({length:15},(_,i)=>i+14)},
+  {title:'Identity Applications',pages:[5,6,7,8,9,10,11,12,13]},
+  {title:'The Stage',pages:[14,15,16,17]},
+  {title:'The Arrival',pages:[18,19]},
+  {title:'Registration',pages:[20,21]},
+  {title:'Brand Environment',pages:[22,23,24,25]},
+  {title:'The Exhibition',pages:[26,27]},
+  {title:'Wayfinding',pages:[28]},
   {title:'Closing Artwork',pages:[29]}
  ];
  const titles={5:'Core visual application',6:'Event visual design',7:'Color palette + typography',8:'Identity applications',9:'Event visual application',10:'Event collateral',11:'Communication application',12:'Event collateral',13:'Event application',14:'Main stage',15:'Stage view',16:'Stage detail',17:'Stage / conference environment',18:'Arrival / Gate 01',19:'Arrival / Gate 02',20:'Registration area',21:'Registration detail',22:'Sponsor feature wall',23:'Side screen',24:'Exhibitor wall',25:'Meeting room',26:'Exhibition booth — view 01',27:'Exhibition booth — view 02',28:'Directional sign',29:'Closing / thank you'};
  function makeCard(p){const figure=document.createElement('figure');figure.className='library-card'+([14,15,16,17,18,19,22,23,24,25,26,27,28].includes(p)?' dark-art':'');figure.innerHTML=`<div class="art-frame"><img src="assets/visuals/page-${String(p).padStart(2,'0')}.jpg" alt="AFA 2027 — ${titles[p]||'proposal visual'}" loading="lazy"></div><figcaption><span>PAGE ${String(p).padStart(2,'0')}</span><span>${titles[p]||'AFA 2027 visual application'}</span></figcaption>`;return figure;}
- section.innerHTML=`<div class="library-head"><div><div class="eyebrow green">COMPLETE VISUAL SYSTEM</div><h2>Every approved visual.<br><em>Fully represented.</em></h2></div><p>Every supplied proposal artwork is presented as a complete composition, at its natural ratio, with no crop, stretch, overlay or artificial fade.</p></div>`;
+ section.innerHTML=`<div class="library-head"><div><div class="eyebrow green">COMPLETE EVENT EXPERIENCE</div><h2>One identity.<br><em>Every touchpoint.</em></h2></div><p>The approved visual language is carried through the complete guest journey — from identity and stage to arrival, registration, exhibition and wayfinding. Every supplied artwork is presented at its natural ratio, without crop, stretch, overlay or artificial fade.</p></div>`;
  groups.forEach(group=>{const wrap=document.createElement('div');wrap.className='library-group';wrap.innerHTML=`<h3>${group.title}</h3>`;const grid=document.createElement('div');grid.className='library-grid';group.pages.forEach(p=>grid.appendChild(makeCard(p)));wrap.appendChild(grid);section.appendChild(wrap);});
  if(footer)footer.parentNode.insertBefore(section,footer);else main.appendChild(section);
  sections.push(section);
