@@ -49,11 +49,11 @@ fixes.textContent=`
   .site-header .brand img{mix-blend-mode:normal}
   .site-header .header-center,.site-header .menu-btn{mix-blend-mode:normal}
 
-  /* Paradigm: use the vector lockup as the actual footer/hero brand, not a recreated text mark. */
+  /* Paradigm is a real vector lockup and appears only in the final footer. */
   .paradigm-lockup{display:inline-flex;align-items:center;line-height:0;color:inherit;text-decoration:none}
   .paradigm-lockup .paradigm-logo{display:block;width:185px;height:auto}
-  .hero-bottom .paradigm-lockup{filter:none}
   .final-footer .paradigm-lockup{filter:none}
+  .hero-bottom>span{display:none!important}
 
   .storyboard>div{color:var(--white)}
   .storyboard b{color:var(--white)}
@@ -84,5 +84,4 @@ document.head.appendChild(fixes);
 
 function paradigmMarkup(){return `<span class="paradigm-lockup" aria-label="Paradigm Capital Group"><img class="paradigm-logo" src="assets/logo/paradigm-capital-group.svg" alt="Paradigm Capital Group"></span>`}
 
-document.querySelectorAll('.hero-bottom>span').forEach(el=>el.outerHTML=paradigmMarkup());
 document.querySelectorAll('.final-footer>span:first-child').forEach(el=>el.outerHTML=paradigmMarkup());
