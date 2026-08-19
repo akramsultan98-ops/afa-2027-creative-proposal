@@ -44,9 +44,6 @@ fixes.textContent=`
   .site-header{mix-blend-mode:difference}
   .site-header .brand img{mix-blend-mode:normal}
   .site-header .header-center,.site-header .menu-btn{mix-blend-mode:normal}
-  .paradigm-lockup{display:inline-flex;align-items:center;line-height:0;color:inherit;text-decoration:none}
-  .paradigm-lockup .paradigm-logo{display:block;width:185px;height:auto}
-  .final-footer .paradigm-lockup{filter:none}
   .hero-bottom>span{display:none!important}
   .storyboard>div{color:var(--white)}
   .storyboard b{color:var(--white)}
@@ -84,7 +81,6 @@ fixes.textContent=`
     .hero-media{width:58vw;height:auto;aspect-ratio:4/5}
     .dna-gallery img,.world-mosaic figure img,.world-mosaic .world-main img{height:auto;aspect-ratio:16/9}
     .identity-art img{max-height:350px}
-    .paradigm-lockup .paradigm-logo{width:145px}
     .visual-library{padding:70px 5vw}
     .visual-library .library-head{grid-template-columns:1fr;gap:25px}
     .library-grid{grid-template-columns:1fr}
@@ -92,9 +88,6 @@ fixes.textContent=`
   }
 `;
 document.head.appendChild(fixes);
-
-function paradigmMarkup(){return `<span class="paradigm-lockup" aria-label="Paradigm Capital Group"><img class="paradigm-logo" src="assets/logo/paradigm-capital-group.svg" alt="Paradigm Capital Group"></span>`}
-document.querySelectorAll('.final-footer>span:first-child').forEach(el=>el.outerHTML=paradigmMarkup());
 
 // Complete proposal visual library: every supplied artwork is presented at its native ratio.
 // This mirrors the visual pages in the source proposal so no approved design is lost in the HTML experience.
