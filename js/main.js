@@ -1,131 +1,238 @@
-const cursor=document.querySelector('.cursor-glow');
-cursor?.remove();
+/* ==========================================================================
+   AFA 2027 — Creative Experience Proposal
+   Behaviour only. This file must never inject styles or branding.
+   ========================================================================== */
 
-const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')}),{threshold:.12});
-document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+(function () {
+  'use strict';
 
-const drawer=document.querySelector('.nav-drawer');
-const menu=document.querySelector('.menu-btn');
-const close=document.querySelector('.drawer-close');
-const nav=document.getElementById('drawer-nav');
-const sections=[...document.querySelectorAll('main section[data-nav]')];
-sections.forEach((s,i)=>{if(!s.id)s.id='section-'+i;const a=document.createElement('a');a.href='#'+s.id;a.textContent=String(i+1).padStart(2,'0')+'  '+s.dataset.nav;nav?.appendChild(a)});
-menu?.addEventListener('click',()=>{drawer?.classList.add('open');drawer?.setAttribute('aria-hidden','false')});
-close?.addEventListener('click',()=>{drawer?.classList.remove('open');drawer?.setAttribute('aria-hidden','true')});
-nav?.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>drawer?.classList.remove('open')));
-const io=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)nav?.querySelectorAll('a').forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+e.target.id))}),{rootMargin:'-40% 0px -50% 0px'});
-sections.forEach(s=>io.observe(s));
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-const progress=document.querySelector('.scroll-progress span');
-const pageNow=document.querySelector('.page-count b');
-function updateChrome(){const max=document.documentElement.scrollHeight-innerHeight;const pct=max>0?(scrollY/max)*100:0;if(progress)progress.style.width=pct+'%';let current=1;sections.forEach((s,i)=>{const r=s.getBoundingClientRect();if(r.top<=innerHeight*.45)current=i+1});if(pageNow)pageNow.textContent=String(current).padStart(2,'0')}
-window.addEventListener('scroll',updateChrome,{passive:true});
-window.addEventListener('resize',updateChrome);
+  var sections   = Array.prototype.slice.call(document.querySelectorAll('main section[data-nav]'));
+  var header     = document.querySelector('.site-header');
+  var headerName = document.getElementById('header-section');
+  var pageCount  = document.querySelector('.page-count');
+  var pageNow    = document.querySelector('.page-count b');
+  var pageTotal  = document.querySelector('.page-count span');
+  var progress   = document.querySelector('.scroll-progress span');
 
-const fixes=document.createElement('style');
-fixes.textContent=`
-.cursor-glow{display:none!important}
-/* The AFA mark is intentionally removed from the top-left header. */
-.site-header .brand{display:none!important}
-.site-header{justify-content:flex-end!important}
-.site-header .header-center{margin-left:auto;margin-right:20px}
-.section.dark{background:var(--forest);color:var(--white)}
-.section.dark .two-col-head>p{color:rgba(255,255,255,.58)}
-.section.dark .section-index{color:rgba(255,255,255,.55)}
-.section.dark .eyebrow{color:rgba(255,255,255,.58)}
-.section.dark h2,.section.dark h3,.section.dark strong{color:var(--white)}
-.section.dark h2 span,.section.dark h2 em{color:var(--green)}
-.section.dark .flow-card h3,.section.dark .journey-step strong{color:var(--white)}
-.section.dark .flow-card p,.section.dark .journey-step p{color:rgba(255,255,255,.58)}
-.section.light,.section.light h2,.section.light h3,.section.light strong{color:var(--ink)}
-.section.light p{color:var(--muted)}
-.section.light .mega-title span,.section.light h2 span{color:var(--green2)}
-.section.light .eyebrow.green{color:var(--green2)}
-.site-header{mix-blend-mode:difference}
-.site-header .header-center,.site-header .menu-btn{mix-blend-mode:normal}
-.hero-bottom>span{display:none!important}
-.storyboard>div,.storyboard b{color:var(--white)}
-.storyboard small{color:rgba(255,255,255,.55)}
-.reveal{will-change:transform,opacity}
-.hero-media{height:auto;aspect-ratio:4/5;display:flex;align-items:center;justify-content:center;background:#08170e;overflow:hidden}
-.hero-media img{width:100%;height:100%;object-fit:contain;object-position:center}
-.story-visual img{height:auto;aspect-ratio:auto;object-fit:contain;background:#dfe9df}
-.dna-gallery figure{background:#0d2619}
-.dna-gallery img{height:auto;aspect-ratio:16/9;object-fit:contain;object-position:center;background:#0d2619}
-.identity-art{overflow:hidden}
-.identity-art img{height:auto;max-height:500px;object-fit:contain;object-position:center}
-.key-visual{background:#0d2619}
-.key-visual img{height:auto;max-height:none;object-fit:contain;object-position:center}
-.world-mosaic figure{background:#dfe9df}
-.world-mosaic figure img,.world-mosaic .world-main img{height:auto;aspect-ratio:16/9;object-fit:contain;object-position:center;background:#dfe9df}
-.digital-card.image-card img{object-fit:contain;object-position:center;background:#0d2619}
+  var drawer  = document.getElementById('nav-drawer');
+  var nav     = document.getElementById('drawer-nav');
+  var menuBtn = document.querySelector('.menu-btn');
+  var closeBtn= document.querySelector('.drawer-close');
+  var scrim   = document.querySelector('.drawer-scrim');
 
-.visual-library{background:var(--cream);color:var(--ink);padding:clamp(90px,9vw,150px) 5vw 130px}
-.visual-library .library-head{display:grid;grid-template-columns:1.15fr .85fr;gap:6vw;align-items:end;margin-bottom:72px;max-width:1600px;margin-left:auto;margin-right:auto}
-.visual-library .library-head h2{font-size:clamp(54px,6.5vw,112px);line-height:.9;letter-spacing:-.05em;margin:12px 0 0;color:var(--ink)}
-.visual-library .library-head h2 em{font-style:normal;color:var(--green2)}
-.visual-library .library-head p{max-width:620px;color:var(--muted);font-size:18px;line-height:1.55;margin:0 0 8px}
-.library-group{margin:82px auto 0;max-width:1600px}
-.library-group h3{font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--green2);margin:0 0 24px}
-.library-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px}
-.library-card{margin:0;background:#f7f9f5;border:1px solid rgba(11,33,22,.12);overflow:hidden;opacity:1!important;transform:none!important}
-.library-card .art-frame{background:#e3e9e2;display:flex;align-items:center;justify-content:center;padding:0;min-height:0}
-.library-card.dark-art .art-frame{background:#0b2116}
-.library-card img{display:block;width:100%;height:auto;max-height:none;object-fit:contain;object-position:center}
-.library-card figcaption{display:flex;justify-content:space-between;gap:20px;padding:15px 18px 17px;border-top:1px solid rgba(11,33,22,.08);font-size:11px;letter-spacing:.12em;text-transform:uppercase;background:var(--cream)}
-.library-card figcaption span:first-child{color:var(--green2)}
-.library-card figcaption span:last-child{color:var(--ink);text-align:right}
-.library-group:first-of-type .library-grid .library-card:first-child,.library-group:nth-of-type(2) .library-grid .library-card:first-child{grid-column:span 2}
-.visual-library .eyebrow{color:var(--green2)}
-.library-mode .site-header .header-center{opacity:.75}
+  if (!sections.length) return;
 
-@media(max-width:900px){
-.visual-library{padding:72px 4vw 100px}
-.visual-library .library-head{grid-template-columns:1fr;gap:24px;margin-bottom:55px}
-.library-grid{grid-template-columns:1fr;gap:22px}
-.library-group:first-of-type .library-grid .library-card:first-child,.library-group:nth-of-type(2) .library-grid .library-card:first-child{grid-column:auto}
-.library-card figcaption{padding:13px 14px}
-}
-@media(max-width:700px){
-.hero-media{width:58vw;height:auto;aspect-ratio:4/5}
-.dna-gallery img,.world-mosaic figure img,.world-mosaic .world-main img{height:auto;aspect-ratio:16/9}
-.identity-art img{max-height:350px}
-.visual-library .library-head h2{font-size:clamp(46px,13vw,72px)}
-.visual-library .library-head p{font-size:15px}
-.library-card figcaption{font-size:9px;gap:10px}
-}
-`;
-document.head.appendChild(fixes);
+  /* ------------------------------------------------------------------------
+     1. Reveal on scroll — fades and lifts the whole element only.
+        Never scales, rotates or filters artwork.
+     ------------------------------------------------------------------------ */
 
-(function buildVisualLibrary(){
- const main=document.querySelector('main');
- if(!main||document.querySelector('.visual-library'))return;
- const footer=document.querySelector('.final-footer');
- const section=document.createElement('section');
- section.id='visual-library';
- section.className='visual-library';
- section.dataset.nav='Visual Applications';
- const groups=[
-  {title:'Identity Applications',pages:[5,6,7,8,9,10,11,12,13]},
-  {title:'The Stage',pages:[14,15,16,17]},
-  {title:'The Arrival',pages:[18,19]},
-  {title:'Registration',pages:[20,21]},
-  {title:'Brand Environment',pages:[22,23,24,25]},
-  {title:'The Exhibition',pages:[26,27]},
-  {title:'Wayfinding',pages:[28]},
-  {title:'Closing Artwork',pages:[29]}
- ];
- const titles={5:'Core visual application',6:'Event visual design',7:'Color palette + typography',8:'Identity applications',9:'Event visual application',10:'Event collateral',11:'Communication application',12:'Event collateral',13:'Event application',14:'Main stage',15:'Stage view',16:'Stage detail',17:'Stage / conference environment',18:'Arrival / Gate 01',19:'Arrival / Gate 02',20:'Registration area',21:'Registration detail',22:'Sponsor feature wall',23:'Side screen',24:'Exhibitor wall',25:'Meeting room',26:'Exhibition booth — view 01',27:'Exhibition booth — view 02',28:'Directional sign',29:'Closing / thank you'};
- function makeCard(p){const figure=document.createElement('figure');figure.className='library-card'+([14,15,16,17,18,19,22,23,24,25,26,27,28].includes(p)?' dark-art':'');figure.innerHTML=`<div class="art-frame"><img src="assets/visuals/page-${String(p).padStart(2,'0')}.jpg" alt="AFA 2027 — ${titles[p]||'proposal visual'}" loading="lazy"></div><figcaption><span>PAGE ${String(p).padStart(2,'0')}</span><span>${titles[p]||'AFA 2027 visual application'}</span></figcaption>`;return figure;}
- section.innerHTML=`<div class="library-head"><div><div class="eyebrow green">COMPLETE EVENT EXPERIENCE</div><h2>One identity.<br><em>Every touchpoint.</em></h2></div><p>The approved visual language is carried through the complete guest journey — from identity and stage to arrival, registration, exhibition and wayfinding. Every supplied artwork is presented at its natural ratio, without crop, stretch, overlay or artificial fade.</p></div>`;
- groups.forEach(group=>{const wrap=document.createElement('div');wrap.className='library-group';wrap.innerHTML=`<h3>${group.title}</h3>`;const grid=document.createElement('div');grid.className='library-grid';group.pages.forEach(p=>grid.appendChild(makeCard(p)));wrap.appendChild(grid);section.appendChild(wrap);});
- if(footer)footer.parentNode.insertBefore(section,footer);else main.appendChild(section);
- sections.push(section);
- io.observe(section);
- const libraryObserver=new IntersectionObserver(entries=>entries.forEach(e=>{document.body.classList.toggle('library-mode',e.isIntersecting)}),{threshold:.12});
- libraryObserver.observe(section);
- section.querySelectorAll('img').forEach(img=>img.addEventListener('load',updateChrome,{once:true}));
- updateChrome();
+  var revealables = document.querySelectorAll('.reveal');
+
+  if (reduceMotion || !('IntersectionObserver' in window)) {
+    Array.prototype.forEach.call(revealables, function (el) {
+      el.classList.add('visible');
+    });
+  } else {
+    var revealObserver = new IntersectionObserver(function (entries, obs) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('visible');
+        obs.unobserve(entry.target);          // fire once, then stop watching
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
+
+    Array.prototype.forEach.call(revealables, function (el) {
+      revealObserver.observe(el);
+    });
+
+    /* Safety net. A fast flick-scroll, a hash jump, or a throttled main thread
+       can let an IntersectionObserver callback be skipped. Nothing in a client
+       proposal may ever stay invisible, so every scroll frame also sweeps for
+       anything that is already past the fold but still hidden. */
+    /* The cover is the entrance sequence, not a scroll reveal. Play it in full
+       on load so no part of it (the rule, the CTA) can be withheld by an
+       intersection threshold or the observer's bottom margin. */
+    var cover = document.querySelector('.cover');
+    if (cover) {
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          Array.prototype.forEach.call(cover.querySelectorAll('.reveal'), function (el) {
+            el.classList.add('visible');
+            revealObserver.unobserve(el);
+          });
+        });
+      });
+    }
+
+    window.__revealSweep = function () {
+      var pending = document.querySelectorAll('.reveal:not(.visible)');
+      if (!pending.length) return;
+      var h = window.innerHeight;
+      Array.prototype.forEach.call(pending, function (el) {
+        var r = el.getBoundingClientRect();
+        // Anything at or above the fold has been "reached" and must be shown —
+        // including content the reader has already scrolled clean past.
+        if (r.top < h * 0.94) {
+          el.classList.add('visible');
+          revealObserver.unobserve(el);
+        }
+      });
+    };
+  }
+
+  /* ------------------------------------------------------------------------
+     2. Navigation drawer, built from the real section list
+     ------------------------------------------------------------------------ */
+
+  var links = [];
+
+  sections.forEach(function (section, i) {
+    if (!section.id) section.id = 'section-' + (i + 1);
+    var a = document.createElement('a');
+    a.href = '#' + section.id;
+    a.innerHTML = '<b>' + String(i + 1).padStart(2, '0') + '</b><span></span>';
+    a.lastChild.textContent = section.dataset.nav;
+    if (nav) nav.appendChild(a);
+    links.push(a);
+  });
+
+  if (pageTotal) pageTotal.textContent = String(sections.length).padStart(2, '0');
+
+  var lastFocused = null;
+
+  function setInert(el, on) {
+    if (!el) return;
+    if (on) { el.setAttribute('inert', ''); } else { el.removeAttribute('inert'); }
+  }
+
+  function openDrawer() {
+    if (!drawer) return;
+    lastFocused = document.activeElement;
+    setInert(drawer, false);
+    drawer.classList.add('open');
+    if (scrim) { scrim.hidden = false; requestAnimationFrame(function () { scrim.classList.add('visible'); }); }
+    if (menuBtn) menuBtn.setAttribute('aria-expanded', 'true');
+    setInert(document.querySelector('main'), true);
+    setInert(document.querySelector('.site-footer'), true);
+    setInert(header, true);
+    document.body.style.overflow = 'hidden';
+    if (closeBtn) closeBtn.focus();
+  }
+
+  function closeDrawer() {
+    if (!drawer || !drawer.classList.contains('open')) return;
+    drawer.classList.remove('open');
+    setInert(drawer, true);
+    if (scrim) {
+      scrim.classList.remove('visible');
+      window.setTimeout(function () { scrim.hidden = true; }, reduceMotion ? 0 : 400);
+    }
+    if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false');
+    setInert(document.querySelector('main'), false);
+    setInert(document.querySelector('.site-footer'), false);
+    setInert(header, false);
+    document.body.style.overflow = '';
+    if (lastFocused && lastFocused.focus) lastFocused.focus();
+  }
+
+  if (menuBtn)  menuBtn.addEventListener('click', openDrawer);
+  if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
+  if (scrim)    scrim.addEventListener('click', closeDrawer);
+
+  links.forEach(function (a) { a.addEventListener('click', closeDrawer); });
+
+  document.addEventListener('keydown', function (e) {
+    if (!drawer || !drawer.classList.contains('open')) return;
+
+    if (e.key === 'Escape') { closeDrawer(); return; }
+    if (e.key !== 'Tab') return;
+
+    // Focus trap
+    var focusables = drawer.querySelectorAll('a[href], button:not([disabled])');
+    if (!focusables.length) return;
+    var first = focusables[0];
+    var last  = focusables[focusables.length - 1];
+
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault(); last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault(); first.focus();
+    }
+  });
+
+  /* ------------------------------------------------------------------------
+     3. Scroll chrome — progress bar, section counter, header name,
+        and light/dark header treatment driven by the section's ground.
+        rAF-throttled: one measurement pass per frame at most.
+     ------------------------------------------------------------------------ */
+
+  var currentIndex = -1;
+  var ticking = false;
+
+  function isLightGround(section) {
+    return section.classList.contains('ground-cream') ||
+           section.classList.contains('ground-gold');
+  }
+
+  function measure() {
+    ticking = false;
+
+    var doc = document.documentElement;
+    var max = doc.scrollHeight - window.innerHeight;
+    var pct = max > 0 ? Math.min(100, Math.max(0, (window.scrollY / max) * 100)) : 0;
+    if (progress) progress.style.width = pct + '%';
+
+    // The section sitting under the fixed header wins.
+    var line = (header ? header.offsetHeight : 74) + 8;
+    var index = 0;
+    for (var i = 0; i < sections.length; i++) {
+      if (sections[i].getBoundingClientRect().top <= line) index = i;
+    }
+    if (index === currentIndex) return;
+    currentIndex = index;
+
+    var section = sections[index];
+
+    if (pageNow)    pageNow.textContent = String(index + 1).padStart(2, '0');
+    if (headerName) headerName.textContent = section.dataset.nav;
+
+    var light = isLightGround(section);
+    if (header)    header.classList.toggle('on-light', light);
+    if (pageCount) pageCount.classList.toggle('on-light', light);
+
+    var theme = document.querySelector('meta[name="theme-color"]');
+    if (theme) {
+      theme.setAttribute('content', light
+        ? (section.classList.contains('ground-gold') ? '#F7CB2C' : '#ECF3EA')
+        : (section.classList.contains('ground-forest') ? '#2A4830' : '#192E1F'));
+    }
+
+    links.forEach(function (a, i) { a.classList.toggle('active', i === index); });
+  }
+
+  function frame() {
+    if (window.__revealSweep) window.__revealSweep();
+    measure();
+  }
+
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(frame);
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+
+  // Lazy images change document height as they arrive; recompute when they do.
+  window.addEventListener('load', frame);
+  document.querySelectorAll('img[loading="lazy"]').forEach(function (img) {
+    img.addEventListener('load', onScroll, { once: true });
+  });
+
+  frame();
+  window.setTimeout(frame, 400);
 })();
-
-updateChrome();
