@@ -306,7 +306,11 @@ h3 {
 }
 
 .plate-cover {
-  width: min(100%, var(--stage-max), calc((100svh - 330px) * 16 / 9));
+  /* Cover hero: the same height-derived width as before, scaled up 22% so the
+     artwork carries the page the way it does on page 1 of the PDF.
+     Still bounded by the content box and --stage-max, so it is never cropped
+     and never exceeds the native 2667px source. */
+  width: min(100%, var(--stage-max), calc((100svh - 330px) * 16 / 9 * 1.22));
   margin-inline: auto;
 }
 
